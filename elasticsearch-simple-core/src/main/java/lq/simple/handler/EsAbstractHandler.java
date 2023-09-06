@@ -28,6 +28,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 
@@ -279,6 +280,12 @@ public abstract class EsAbstractHandler implements EsOperate, EsLtr {
         return query.toString();
     }
 
+    /**
+     * 聚合dsl
+     *
+     * @param aggReq agg请求
+     * @return {@link Object}
+     */
     @Override
     public Object aggDsl(List<AggReq> aggReq) {
         if (Objects.isNull(aggReq)) {
@@ -294,6 +301,12 @@ public abstract class EsAbstractHandler implements EsOperate, EsLtr {
         return builder.toString();
     }
 
+    /**
+     * 高亮dsl
+     *
+     * @param highlightReqs 突出显示请求
+     * @return {@link Object}
+     */
     @Override
     public Object highlightDsl(List<HighlightReq> highlightReqs) {
         if (Objects.isNull(highlightReqs)) {
@@ -303,6 +316,17 @@ public abstract class EsAbstractHandler implements EsOperate, EsLtr {
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightReqs.stream().map(highlight->new HighlightBuilder.Field(highlight.getField())).forEach(highlightBuilder::field);
         builder.highlighter(highlightBuilder);
+        return builder.toString();
+    }
+
+
+    @Override
+    public Object aggDsl(AggregationBuilder aggregationBuilder) {
+        if (Objects.isNull(aggregationBuilder)) {
+            throw new AggException(AggException.AGG_ERROR_MESSAGE);
+        }
+        SearchSourceBuilder builder =  getSearchSourceBuilder();
+        builder.aggregation(aggregationBuilder);
         return builder.toString();
     }
 
