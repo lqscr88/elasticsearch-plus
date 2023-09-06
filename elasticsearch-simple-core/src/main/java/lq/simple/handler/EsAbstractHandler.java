@@ -10,6 +10,7 @@ import lq.simple.bean.resp.RestResp;
 import lq.simple.builder.AggregationBuilders;
 import lq.simple.builder.MatchQueryBuilder;
 import lq.simple.builder.QueryStringBuilder;
+import lq.simple.core.EsDsl;
 import lq.simple.core.EsLtr;
 import lq.simple.core.EsOperate;
 import lq.simple.enums.SearchHttpTypeEnum;
@@ -43,7 +44,7 @@ import java.util.Objects;
  * @date 2023/08/31
  */
 @Log4j2
-public abstract class EsAbstractHandler implements EsOperate, EsLtr {
+public abstract class EsAbstractHandler implements EsDsl, EsLtr {
 
 
     protected EsCoverHandler esCoverHandler;

@@ -15,7 +15,7 @@ import java.util.List;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsDsl {
+public interface EsDsl extends  EsOperate {
 
     /**
      *

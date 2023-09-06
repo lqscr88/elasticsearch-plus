@@ -10,7 +10,7 @@ import lq.simple.result.SearchResult;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsOperate extends  EsDsl {
+public interface EsOperate {
 
     /**
      *
