@@ -20,8 +20,8 @@ import lq.simple.util.JsonCheckUtils;
 public class EsHandler extends EsAbstractHandler  implements EsCover {
 
     public EsHandler(String ip, Integer port, String username, String password) {
-        super.esCoverHandler = new EsCoverHandler();
-        super.client = new EsClient(ip,port,username, password).getClient();
+        esCoverHandler = new EsCoverHandler();
+        client = new EsClient(ip,port,username, password).getClient();
     }
 
 
@@ -30,7 +30,7 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.INDEX_ERROR_MESSAGE);
         }
-        return cover(super.setIndex(index, json).toString());
+        return cover(setIndex(index, json).toString());
     }
 
 
@@ -39,7 +39,7 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.SETTINGS_ERROR_MESSAGE);
         }
-        return cover(super.setMapping(index, json).toString());
+        return cover(setMapping(index, json).toString());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.SETTINGS_ERROR_MESSAGE);
         }
-        return cover(super.setSetting(index, json).toString());
+        return cover(setSetting(index, json).toString());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.DSL_ERROR_MESSAGE);
         }
-        return super.search(index, json);
+        return search(index, json);
     }
 
     /**
@@ -72,11 +72,11 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
 
     @Override
     public Object getIndex(String index) {
-        return cover(super.getIndex(index).toString());
+        return cover(getIndex(index).toString());
     }
 
     @Override
     public Object initLtr() {
-        return cover(super.initLtr().toString());
+        return cover(initLtr().toString());
     }
 }
