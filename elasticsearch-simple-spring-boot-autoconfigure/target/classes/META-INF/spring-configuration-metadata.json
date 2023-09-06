@@ -1,0 +1,37 @@
+{
+  "groups": [
+    {
+      "name": "es",
+      "type": "lq.simple.config.EsProperties",
+      "sourceType": "lq.simple.config.EsProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "es.ip",
+      "type": "java.lang.String",
+      "sourceType": "lq.simple.config.EsProperties"
+    },
+    {
+      "name": "es.is-open-ltr",
+      "type": "java.lang.Boolean",
+      "sourceType": "lq.simple.config.EsProperties"
+    },
+    {
+      "name": "es.password",
+      "type": "java.lang.String",
+      "sourceType": "lq.simple.config.EsProperties"
+    },
+    {
+      "name": "es.port",
+      "type": "java.lang.Integer",
+      "sourceType": "lq.simple.config.EsProperties"
+    },
+    {
+      "name": "es.root",
+      "type": "java.lang.String",
+      "sourceType": "lq.simple.config.EsProperties"
+    }
+  ],
+  "hints": []
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/elasticsearch-simple.iml" filepath="$PROJECT_DIR$/.idea/elasticsearch-simple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elasticsearch-simple-core/elasticsearch-simple-core.iml" filepath="$PROJECT_DIR$/elasticsearch-simple-core/elasticsearch-simple-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elasticsearch-simple-dependencies/elasticsearch-simple-dependencies.iml" filepath="$PROJECT_DIR$/elasticsearch-simple-dependencies/elasticsearch-simple-dependencies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elasticsearch-simple-spring-boot-autoconfigure/elasticsearch-simple-spring-boot-autoconfigure.iml" filepath="$PROJECT_DIR$/elasticsearch-simple-spring-boot-autoconfigure/elasticsearch-simple-spring-boot-autoconfigure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/elasticsearch-simple-spring-boot-starter/elasticsearch-simple-spring-boot-starter.iml" filepath="$PROJECT_DIR$/elasticsearch-simple-spring-boot-starter/elasticsearch-simple-spring-boot-starter.iml" />
+    </modules>
+  </component>
+</project>
