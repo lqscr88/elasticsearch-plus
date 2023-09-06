@@ -2,7 +2,7 @@ package lq.simple.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import lq.simple.bean.RestResp;
+import lq.simple.bean.resp.RestResp;
 import lq.simple.enums.SearchKeyWordEnum;
 import lq.simple.result.SearchResult;
 import org.apache.http.util.EntityUtils;

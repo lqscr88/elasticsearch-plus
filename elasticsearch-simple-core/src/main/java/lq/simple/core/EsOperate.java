@@ -1,7 +1,7 @@
 package lq.simple.core;
 
-import lq.simple.bean.QueryReq;
-import lq.simple.bean.RestResp;
+import lq.simple.bean.req.QueryReq;
+import lq.simple.bean.resp.RestResp;
 import lq.simple.result.SearchResult;
 
 /**
@@ -10,7 +10,7 @@ import lq.simple.result.SearchResult;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsOperate {
+public interface EsOperate extends  EsDsl {
 
     /**
      *
@@ -47,13 +47,6 @@ public interface EsOperate {
      *@return the {@link RestResp}
      */
     RestResp<SearchResult> match(QueryReq queryReq);
-    /**
-     *
-     * matchDsl语句
-     * @param queryReq {@link QueryReq}   请求参数实体类
-     *@return the {@link RestResp}
-     */
-    Object matchDsl(QueryReq queryReq);
 
 
     /**
@@ -65,28 +58,12 @@ public interface EsOperate {
     RestResp<SearchResult> matchPhrase(QueryReq queryReq);
 
     /**
-     * 匹配短语dsl
-     *
-     * @param queryReq 查询请求
-     * @return {@link Object}
-     */
-    Object  matchPhraseDsl(QueryReq queryReq);
-
-    /**
      * 查询字符串
      *
      * @param queryReq 查询请求
      * @return {@link RestResp}<{@link SearchResult}>
      */
     RestResp<SearchResult> queryString(QueryReq queryReq);
-
-    /**
-     * 查询字符串dsl
-     *
-     * @param queryReq 查询请求
-     * @return {@link Object}
-     */
-    Object queryStringDsl(QueryReq queryReq);
 
     /**
      * 搜索

@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package lq.simple.bean;
+package lq.simple.bean.req;
 
 
 import lombok.Builder;

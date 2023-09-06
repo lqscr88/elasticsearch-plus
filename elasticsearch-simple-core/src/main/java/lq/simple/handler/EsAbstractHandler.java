@@ -3,14 +3,17 @@ package lq.simple.handler;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.log4j.Log4j2;
-import lq.simple.bean.QueryReq;
-import lq.simple.bean.RestResp;
+import lq.simple.bean.req.AggReq;
+import lq.simple.bean.req.HighlightReq;
+import lq.simple.bean.req.QueryReq;
+import lq.simple.bean.resp.RestResp;
+import lq.simple.builder.AggregationBuilders;
 import lq.simple.builder.MatchQueryBuilder;
 import lq.simple.builder.QueryStringBuilder;
-import lq.simple.core.EsCover;
 import lq.simple.core.EsLtr;
 import lq.simple.core.EsOperate;
 import lq.simple.enums.SearchHttpTypeEnum;
+import lq.simple.exception.AggException;
 import lq.simple.result.SearchResult;
 import lq.simple.util.CharacterUtil;
 import lq.simple.util.StringUtils;
@@ -26,8 +29,10 @@ import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,12 +42,13 @@ import java.util.Objects;
  * @date 2023/08/31
  */
 @Log4j2
-public abstract class EsAbstractHandler  implements EsOperate, EsLtr{
+public abstract class EsAbstractHandler implements EsOperate, EsLtr {
 
 
     protected EsCoverHandler esCoverHandler;
 
     protected RestHighLevelClient client;
+
     /**
      * 设置索引
      *
@@ -166,10 +172,10 @@ public abstract class EsAbstractHandler  implements EsOperate, EsLtr{
         SearchSourceBuilder query = builder.from(queryReq.getFrom())
                 .size(queryReq.getSize())
                 .query(matchQueryBuilder);
-        log.info("*********************************DSL: {}",query.toString());
+        log.info("*********************************DSL: {}", query.toString());
         HttpEntity entity = new NStringEntity(query.toString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(queryReq.getIndex()).concat(CharacterUtil.SLASH + "_search"));
-        log.info("*********************************URl: {} {}",request.getMethod(),request.getEndpoint());
+        log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
         return esCoverHandler.cover(getResult(getResponse(request)));
     }
@@ -273,6 +279,33 @@ public abstract class EsAbstractHandler  implements EsOperate, EsLtr{
         return query.toString();
     }
 
+    @Override
+    public Object aggDsl(List<AggReq> aggReq) {
+        if (Objects.isNull(aggReq)) {
+            throw new AggException(AggException.AGG_ERROR_MESSAGE);
+        }
+        SearchSourceBuilder builder =  getSearchSourceBuilder();
+        builder.aggregation(AggregationBuilders.terms(aggReq.get(0).getCustomFields()).field(aggReq.get(0).getField()).size(aggReq.get(0).getSize()));
+        aggReq
+                .stream()
+                .skip(0)
+                .map(agg -> AggregationBuilders.terms(agg.getCustomFields()).field(agg.getField()).size(agg.getSize()))
+                .forEach(agg->builder.aggregations().addAggregator(agg));
+        return builder.toString();
+    }
+
+    @Override
+    public Object highlightDsl(List<HighlightReq> highlightReqs) {
+        if (Objects.isNull(highlightReqs)) {
+            throw new AggException(AggException.AGG_ERROR_MESSAGE);
+        }
+        SearchSourceBuilder builder =  getSearchSourceBuilder();
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightReqs.stream().map(highlight->new HighlightBuilder.Field(highlight.getField())).forEach(highlightBuilder::field);
+        builder.highlighter(highlightBuilder);
+        return builder.toString();
+    }
+
     /**
      * 搜索
      *
@@ -282,14 +315,13 @@ public abstract class EsAbstractHandler  implements EsOperate, EsLtr{
      */
     @Override
     public RestResp<SearchResult> search(String index, String json) {
-        log.info("*********************************DSL: {}",json);
+        log.info("*********************************DSL: {}", json);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
-        log.info("*********************************URl: {} {}",request.getMethod(),request.getEndpoint());
+        log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
         return esCoverHandler.cover(getResult(getResponse(request)));
     }
-
 
 
     /**

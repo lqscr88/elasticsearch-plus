@@ -2,7 +2,7 @@ package lq.simple.handler;
 
 
 import com.alibaba.fastjson.JSONObject;
-import lq.simple.bean.RestResp;
+import lq.simple.bean.resp.RestResp;
 import lq.simple.client.EsClient;
 import lq.simple.core.EsCover;
 import lq.simple.exception.IndexException;
