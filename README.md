@@ -1,37 +1,56 @@
 # elasticsearch-simple
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
-
+elasticsearch-simple是一个专为elasticsearch定制的插件，可以进行简易的elasticsearch增删改查，DSL_QUERY语句的生成，LTR的使用
 #### 软件架构
-软件架构说明
-1
+|                      模块                      |         介绍          |
+| :--------------------------------------------: | :-------------------: |
+|           elasticsearch-simple-core            | elasticsearch核心实现 |
+|       elasticsearch-simple-dependencies        | dependencies统一管理  |
+|    elasticsearch-simple-spring-boot-starter    |  springboot starter   |
+| elasticsearch-simple-spring-boot-autoconfigure | springboot自动配置包  |
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+Maven
+pom.xml的dependencies中加入以下内容。
+最新版本：1.0.0
+```
+    <!--  单点登录spring-boot-starter依赖  -->
+     <dependency>
+         <groupId>lq.simple</groupId>
+         <artifactId>elasticsearch-simple-spring-boot-starter</artifactId>
+         <version>1.0.0</version>
+     </dependency>
+```
+
+#### 配置说明
+**修改服务application.properties配置，根据版本，视情况登录apollo 或者 nacos**   
+es.ip=127.0.0.1  
+es.port=9200  
+
+带密码的情况：  
+es.root=elastic  
+es.password=123456  
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```
+ @Resource
+ private EsOperate esOperate;
+```
 
 #### 参与贡献
 
 1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
+2.  新建 master分支
 3.  提交代码
 4.  新建 Pull Request
 
 
 #### 特技
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
+1.  使用 Readme.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
 2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
 3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
 4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
