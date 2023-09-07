@@ -3,7 +3,8 @@ package lq.simple.handler;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lq.simple.bean.resp.RestResp;
-import lq.simple.core.EsCover;
+import lq.simple.core.cover.AbstractEsCoverHandler;
+import lq.simple.core.cover.EsCover;
 import lq.simple.enums.SearchKeyWordEnum;
 import lq.simple.result.SearchResult;
 
@@ -16,23 +17,7 @@ import java.util.Objects;
  * @author lqscr88
  * @date 2023/08/30
  */
-public  class EsCoverHandler implements EsCover {
-
-    /**
-     * 转换
-     *
-     * @param response 响应
-     * @return {@link RestResp}<{@link SearchResult}>
-     */
-    @Override
-    public RestResp<SearchResult> cover(String response) {
-        RestResp<SearchResult> rs = new RestResp<>();
-        JSONObject data = JSONObject.parseObject(response);
-        JSONObject hits = data.getJSONObject("hits");
-        rs.setData(parseResult(hits.getJSONArray("hits"), data.getJSONObject("aggregations")));
-        rs.setCount(hits.getJSONObject("total").getInteger("value"));
-        return rs;
-    }
+public class EsCoverHandler extends AbstractEsCoverHandler{
 
     /**
      * 解析结果
@@ -73,5 +58,15 @@ public  class EsCoverHandler implements EsCover {
             }
         }
         return searchResult;
+    }
+
+    @Override
+    protected RestResp<SearchResult> doCover(String response) {
+        RestResp<SearchResult> rs = new RestResp<>();
+        JSONObject data = JSONObject.parseObject(response);
+        JSONObject hits = data.getJSONObject("hits");
+        rs.setData(parseResult(hits.getJSONArray("hits"), data.getJSONObject("aggregations")));
+        rs.setCount(hits.getJSONObject("total").getInteger("value"));
+        return rs;
     }
 }

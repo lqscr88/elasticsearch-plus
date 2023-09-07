@@ -10,6 +10,6 @@ public enum SearchHttpTypeEnum {
     PUT,
     POST,
     DELETE,
-    GET;
+    GET
 
 }

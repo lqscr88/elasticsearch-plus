@@ -1,4 +1,4 @@
-package lq.simple.core;
+package lq.simple.core.ltr;
 
 
 /**
@@ -7,7 +7,7 @@ package lq.simple.core;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsLtr extends EsOperate {
+public interface EsLtr{
 
 
     /**

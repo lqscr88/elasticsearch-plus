@@ -4,7 +4,11 @@ package lq.simple.handler;
 import com.alibaba.fastjson.JSONObject;
 import lq.simple.bean.resp.RestResp;
 import lq.simple.client.EsClient;
-import lq.simple.core.EsCover;
+import lq.simple.core.cover.EsCover;
+import lq.simple.core.dsl.EsDsl;
+import lq.simple.core.dsl.EsDslHandler;
+import lq.simple.core.ltr.EsLtr;
+import lq.simple.core.ltr.EsLtrHandler;
 import lq.simple.exception.IndexException;
 import lq.simple.result.SearchResult;
 import lq.simple.util.JsonCheckUtils;
@@ -17,7 +21,7 @@ import lq.simple.util.JsonCheckUtils;
  * @date 2023/08/30
  */
 
-public class EsHandler extends EsAbstractHandler  implements EsCover {
+public class EsHandler extends AbstractEsHandler implements EsCover {
 
     public EsHandler(String ip, Integer port, String username, String password) {
         esCoverHandler = new EsCoverHandler();
@@ -75,8 +79,14 @@ public class EsHandler extends EsAbstractHandler  implements EsCover {
         return cover(super.getIndex(index).toString());
     }
 
+
     @Override
-    public Object initLtr() {
-        return cover(super.initLtr().toString());
+    public EsDsl dslOps() {
+        return new EsDslHandler();
+    }
+
+    @Override
+    public EsLtr ltrOps() {
+        return new EsLtrHandler(client);
     }
 }

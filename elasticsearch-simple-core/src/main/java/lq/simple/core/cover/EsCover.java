@@ -1,4 +1,4 @@
-package lq.simple.core;
+package lq.simple.core.cover;
 
 
 /**

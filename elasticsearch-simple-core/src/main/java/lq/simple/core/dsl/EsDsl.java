@@ -1,4 +1,4 @@
-package lq.simple.core;
+package lq.simple.core.dsl;
 
 import lq.simple.bean.req.AggReq;
 import lq.simple.bean.req.HighlightReq;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsDsl extends  EsOperate {
+public interface EsDsl {
 
     /**
      *
