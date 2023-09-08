@@ -40,7 +40,7 @@ es.password=123456
  private EsOperate esOperate;
 ```
 
-#### 使用说明
+#### LTR使用说明
 
 ```
 package lq.simple.core.ltr;
