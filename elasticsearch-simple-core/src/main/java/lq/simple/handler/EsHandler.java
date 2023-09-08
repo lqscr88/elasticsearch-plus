@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import lq.simple.bean.resp.RestResp;
 import lq.simple.client.EsClient;
 import lq.simple.core.cover.EsCover;
+import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.core.dsl.EsDsl;
 import lq.simple.core.dsl.EsDslHandler;
 import lq.simple.core.ltr.EsLtr;

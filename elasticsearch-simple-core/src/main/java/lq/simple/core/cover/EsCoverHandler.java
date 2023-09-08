@@ -1,4 +1,4 @@
-package lq.simple.handler;
+package lq.simple.core.cover;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

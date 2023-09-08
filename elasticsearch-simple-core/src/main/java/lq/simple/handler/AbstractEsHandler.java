@@ -6,6 +6,7 @@ import lq.simple.bean.resp.RestResp;
 import lq.simple.builder.MatchQueryBuilder;
 import lq.simple.builder.QueryStringBuilder;
 import lq.simple.core.EsOperate;
+import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.enums.SearchHttpTypeEnum;
 import lq.simple.result.SearchResult;
 import lq.simple.util.CharacterUtil;

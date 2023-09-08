@@ -10,4 +10,6 @@ public abstract class AbstractEsCoverHandler implements EsCover {
     }
 
     protected abstract  <T> T doCover(String response);
+
+
 }
