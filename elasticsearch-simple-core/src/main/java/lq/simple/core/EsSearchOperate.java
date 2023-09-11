@@ -44,4 +44,10 @@ public interface EsSearchOperate {
      * @return {@link RestResp}<{@link SearchResult}>
      */
     RestResp<SearchResult> search(String index, String json);
+
+    RestResp<SearchResult> all(String index, Integer page,Integer size);
+
+    default RestResp<SearchResult> all(String index){
+        return all(index,null,null);
+    }
 }

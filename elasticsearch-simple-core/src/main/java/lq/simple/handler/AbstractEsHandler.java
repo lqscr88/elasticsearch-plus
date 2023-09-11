@@ -21,6 +21,7 @@ import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+
 import java.util.Objects;
 
 /**
@@ -49,7 +50,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
     }
 
     /**
@@ -61,7 +62,7 @@ public abstract class AbstractEsHandler implements EsOperate {
     @Override
     public Object deleteIndex(String index) {
         Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
     }
 
     /**
@@ -73,9 +74,8 @@ public abstract class AbstractEsHandler implements EsOperate {
     @Override
     public Object getIndex(String index) {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
     }
-
 
 
     /**
@@ -90,7 +90,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_mappings"));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
     }
 
 
@@ -106,7 +106,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_settings"));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(queryReq.getIndex()).concat(CharacterUtil.SLASH + "_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
+        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
     }
 
 
@@ -200,9 +200,20 @@ public abstract class AbstractEsHandler implements EsOperate {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
+        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
     }
 
-
-
+    @Override
+    public RestResp<SearchResult> all(String index, Integer page, Integer size) {
+        String json = "{\"from\":0,\"size\":100,\"query\":{\"match_all\":{}}}";
+        if (page != null && size != null) {
+            json =  json.replace("0",page.toString()).replace("100",size.toString());
+        }
+        log.info("*********************************DSL: {}", json);
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
+        log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
+        request.setEntity(entity);
+        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+    }
 }
