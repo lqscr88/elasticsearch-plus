@@ -11,6 +11,7 @@ import lq.simple.core.dsl.EsDslHandler;
 import lq.simple.core.ltr.EsLtr;
 import lq.simple.core.ltr.EsLtrHandler;
 import lq.simple.exception.IndexException;
+import lq.simple.exception.UpdateException;
 import lq.simple.result.SearchResult;
 import lq.simple.util.JsonCheckUtils;
 
@@ -68,6 +69,13 @@ public class EsHandler extends AbstractEsHandler{
         return super.search(index, json);
     }
 
+    @Override
+    public Object updateById(String index, String json) {
+        if (!json.contains("id")){
+            throw new UpdateException(UpdateException.UPDATE_ERROR_MESSAGE);
+        }
+        return esCoverHandler.cover(super.updateById(index, json).toString());
+    }
 
     @Override
     public Object getIndex(String index) {

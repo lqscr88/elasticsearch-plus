@@ -1,5 +1,6 @@
 package lq.simple.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.log4j.Log4j2;
 import lq.simple.bean.req.QueryReq;
 import lq.simple.bean.resp.RestResp;
@@ -22,6 +23,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,6 +36,7 @@ import java.util.Objects;
 public abstract class AbstractEsHandler implements EsOperate {
 
 
+    public static final String DOC = "_doc";
     protected EsCoverHandler esCoverHandler;
 
     protected RestHighLevelClient client;
@@ -215,5 +218,48 @@ public abstract class AbstractEsHandler implements EsOperate {
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
         return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+    }
+
+    @Override
+    public Object saveById(String index, String json) {
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Request request;
+        if (json.contains("id")){
+            JSONObject jsonObject =JSONObject.parseObject(json);
+            String id = jsonObject.getString("id");
+            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
+        }else {
+            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC));
+        }
+        request.setEntity(entity);
+        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+    }
+
+    @Override
+    public Object save(String index, String json) {
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC));
+        request.setEntity(entity);
+        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+    }
+
+    @Override
+    public Object saveBatch(String index, List<String> json) {
+        return null;
+    }
+
+    @Override
+    public Object updateById(String index, String json) {
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String id = jsonObject.getString("id");
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        Request  request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id).concat(CharacterUtil.SLASH).concat("_update"));
+        request.setEntity(entity);
+        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+    }
+
+    @Override
+    public Object updateBatch(String index, List<String> json) {
+        return null;
     }
 }
