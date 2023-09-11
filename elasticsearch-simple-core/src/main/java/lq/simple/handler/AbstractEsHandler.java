@@ -205,7 +205,7 @@ public abstract class AbstractEsHandler implements EsOperate {
 
     @Override
     public RestResp<SearchResult> all(String index, Integer page, Integer size) {
-        String json = "{\"from\":0,\"size\":100,\"query\":{\"match_all\":{}}}";
+        String json = "{\"from\":0,\"size\":1000,\"query\":{\"match_all\":{}}}";
         if (page != null && size != null) {
             json =  json.replace("0",page.toString()).replace("100",size.toString());
         }
