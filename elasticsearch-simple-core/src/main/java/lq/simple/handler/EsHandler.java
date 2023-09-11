@@ -22,7 +22,7 @@ import lq.simple.util.JsonCheckUtils;
  * @date 2023/08/30
  */
 
-public class EsHandler extends AbstractEsHandler implements EsCover {
+public class EsHandler extends AbstractEsHandler{
 
     public EsHandler(String ip, Integer port, String username, String password) {
         esCoverHandler = new EsCoverHandler();
@@ -31,28 +31,33 @@ public class EsHandler extends AbstractEsHandler implements EsCover {
 
 
     @Override
-    public Object setIndex(String index, String json) {
+    public Object createIndex(String index, String json) {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.INDEX_ERROR_MESSAGE);
         }
-        return cover(super.setIndex(index, json).toString());
+        return esCoverHandler.cover(super.createIndex(index, json).toString());
     }
 
 
     @Override
-    public Object setMapping(String index, String json) {
-        if (JsonCheckUtils.checkJson(json)) {
-            throw new IndexException(IndexException.SETTINGS_ERROR_MESSAGE);
-        }
-        return cover(super.setMapping(index, json).toString());
+    public Object deleteIndex(String index) {
+        return esCoverHandler.cover(super.deleteIndex(index).toString());
     }
 
     @Override
-    public Object setSetting(String index, String json) {
+    public Object updateMapping(String index, String json) {
+        if (JsonCheckUtils.checkJson(json)) {
+            throw new IndexException(IndexException.MAPPINGS_ERROR_MESSAGE);
+        }
+        return esCoverHandler.cover(super.updateMapping(index, json).toString());
+    }
+
+    @Override
+    public Object updateSetting(String index, String json) {
         if (JsonCheckUtils.checkJson(json)) {
             throw new IndexException(IndexException.SETTINGS_ERROR_MESSAGE);
         }
-        return cover(super.setSetting(index, json).toString());
+        return esCoverHandler.cover(super.updateSetting(index, json).toString());
     }
 
     @Override
@@ -63,21 +68,10 @@ public class EsHandler extends AbstractEsHandler implements EsCover {
         return super.search(index, json);
     }
 
-    /**
-     * 转换
-     *
-     * @param response 响应
-     * @return {@link JSONObject}
-     */
-    @Override
-    public JSONObject cover(String response) {
-        return JSONObject.parseObject(response);
-    }
-
 
     @Override
     public Object getIndex(String index) {
-        return cover(super.getIndex(index).toString());
+        return esCoverHandler.cover(super.getIndex(index).toString());
     }
 
 

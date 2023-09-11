@@ -53,6 +53,26 @@ public interface EsLtr{
 
 
     /**
+     * 删除模板
+     *
+     * @param templateName 模板名称
+     * @return {@link Object}
+     */
+    Object deleteTemplate(String templateName);
+
+    /**
+     * 更新模板
+     *
+     * @param templateName 模板名称
+     * @param param        参数
+     * @return {@link Object}
+     */
+    Object updateTemplate(String templateName, List<Object> param);
+
+    Object getTemplate(String templateName);
+
+
+    /**
      * Ltr详情： https://elasticsearch-learning-to-rank.readthedocs.io/en/latest/index.html
      * 创建模型
      * 请求参数param例子：
@@ -77,6 +97,12 @@ public interface EsLtr{
      * @return {@link Object}
      */
     Object createTemplateModel(String modelName,Object modelParam);
+
+
+    Object deleteTemplateModel(String modelName);
+
+    Object getTemplateModel(String modelName);
+
 
 
     /**

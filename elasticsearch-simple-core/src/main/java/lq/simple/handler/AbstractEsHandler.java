@@ -45,10 +45,22 @@ public abstract class AbstractEsHandler implements EsOperate {
      * @return {@link Object}
      */
     @Override
-    public Object setIndex(String index, String json) {
+    public Object createIndex(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index));
         request.setEntity(entity);
+        return ResultUtil.getResult(ResultUtil.getResponse(request,client));
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param index 指数
+     * @return {@link Object}
+     */
+    @Override
+    public Object deleteIndex(String index) {
+        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index));
         return ResultUtil.getResult(ResultUtil.getResponse(request,client));
     }
 
@@ -74,7 +86,7 @@ public abstract class AbstractEsHandler implements EsOperate {
      * @return {@link Object}
      */
     @Override
-    public Object setMapping(String index, String json) {
+    public Object updateMapping(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_mappings"));
         request.setEntity(entity);
@@ -90,7 +102,7 @@ public abstract class AbstractEsHandler implements EsOperate {
      * @return {@link Object}
      */
     @Override
-    public Object setSetting(String index, String json) {
+    public Object updateSetting(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_settings"));
         request.setEntity(entity);
@@ -132,7 +144,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(queryReq.getIndex()).concat(CharacterUtil.SLASH + "_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
+        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
     }
 
 
@@ -188,7 +200,7 @@ public abstract class AbstractEsHandler implements EsOperate {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
+        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request,client)));
     }
 
 

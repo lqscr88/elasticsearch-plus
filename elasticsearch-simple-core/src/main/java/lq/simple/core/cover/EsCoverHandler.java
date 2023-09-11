@@ -61,7 +61,7 @@ public class EsCoverHandler extends AbstractEsCoverHandler{
     }
 
     @Override
-    protected RestResp<SearchResult> doCover(String response) {
+    public RestResp<SearchResult> doCover(String response) {
         RestResp<SearchResult> rs = new RestResp<>();
         JSONObject data = JSONObject.parseObject(response);
         JSONObject hits = data.getJSONObject("hits");
@@ -69,4 +69,17 @@ public class EsCoverHandler extends AbstractEsCoverHandler{
         rs.setCount(hits.getJSONObject("total").getInteger("value"));
         return rs;
     }
+
+    /**
+     * 转换
+     *
+     * @param response 响应
+     * @return {@link JSONObject}
+     */
+    @Override
+    public JSONObject cover(String response) {
+        return JSONObject.parseObject(response);
+    }
+
+
 }

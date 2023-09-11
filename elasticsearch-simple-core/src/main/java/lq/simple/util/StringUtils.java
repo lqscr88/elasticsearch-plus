@@ -33,9 +33,9 @@ package lq.simple.util;
  *  <li><b>endsWith</b>
  *      - check if a String ends with a suffix null-safe</li>
  *  <li><b>IndexOf/LastIndexOf/Contains</b>
- *      - null-safe setIndex-of checks
+ *      - null-safe createIndex-of checks
  *  <li><b>IndexOfAny/LastIndexOfAny/IndexOfAnyBut/LastIndexOfAnyBut</b>
- *      - setIndex-of any of a set of Strings</li>
+ *      - createIndex-of any of a set of Strings</li>
  *  <li><b>ContainsOnly/ContainsNone/ContainsAny</b>
  *      - does String contains only/none/any of these characters</li>
  *  <li><b>Substring/Left/Right/Mid</b>
@@ -156,7 +156,7 @@ public class StringUtils {
     public static final String CR = "\r";
 
     /**
-     * Represents a failed setIndex search.
+     * Represents a failed createIndex search.
      * @since 2.1
      */
     public static final int INDEX_NOT_FOUND = -1;

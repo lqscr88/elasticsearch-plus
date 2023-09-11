@@ -18,10 +18,10 @@ import java.util.List;
 public interface EsDsl {
 
     /**
-     *
      * matchDsl语句
+     *
      * @param queryReq {@link QueryReq}   请求参数实体类
-     *@return the {@link RestResp}
+     * @return the {@link RestResp}
      */
     Object matchDsl(QueryReq queryReq);
 
@@ -31,7 +31,7 @@ public interface EsDsl {
      * @param queryReq 查询请求
      * @return {@link Object}
      */
-    Object  matchPhraseDsl(QueryReq queryReq);
+    Object matchPhraseDsl(QueryReq queryReq);
 
     /**
      * 查询字符串dsl

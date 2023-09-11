@@ -9,11 +9,19 @@ package lq.simple.core;
 public interface EsIndexOperate {
     /**
      *
-     * 设置Index信息
+     * 创建Index信息
      * @param index 索引名称
      * @param json 索引配置信息
      */
-    Object setIndex(String index, String json);
+    Object createIndex(String index, String json);
+
+    /**
+     * 删除索引
+     *
+     * @param index 指数
+     * @return {@link Object}
+     */
+    Object deleteIndex(String index);
 
     /**
      *
@@ -23,16 +31,16 @@ public interface EsIndexOperate {
     Object getIndex(String index);
     /**
      *
-     * 设置Mappings信息
+     * 更新Mappings信息
      * @param index 索引名称
      * @param json 索引配置信息
      */
-    Object setMapping(String index, String json);
+    Object updateMapping(String index, String json);
     /**
      *
-     * 设置Settings信息
+     * 更新Settings信息
      * @param index 索引名称
      * @param json 索引配置信息
      */
-    Object setSetting(String index, String json);
+    Object updateSetting(String index, String json);
 }
