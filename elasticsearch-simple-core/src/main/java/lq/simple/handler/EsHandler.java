@@ -1,10 +1,8 @@
 package lq.simple.handler;
 
 
-import com.alibaba.fastjson.JSONObject;
 import lq.simple.bean.resp.RestResp;
 import lq.simple.client.EsClient;
-import lq.simple.core.cover.EsCover;
 import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.core.dsl.EsDsl;
 import lq.simple.core.dsl.EsDslHandler;
@@ -70,11 +68,11 @@ public class EsHandler extends AbstractEsHandler{
     }
 
     @Override
-    public Object updateById(String index, String json) {
-        if (!json.contains("id")){
+    public Object update(String index, String json) {
+        if (!json.contains(ID)){
             throw new UpdateException(UpdateException.UPDATE_ERROR_MESSAGE);
         }
-        return esCoverHandler.cover(super.updateById(index, json).toString());
+        return esCoverHandler.cover(super.update(index, json).toString());
     }
 
     @Override
