@@ -14,7 +14,17 @@ import lq.simple.result.SearchResult;
  */
 public interface EsOperate extends EsSearchOperate,EsIndexOperate,EsCrudOperate  {
 
+    /**
+     * dsl操作
+     *
+     * @return {@link EsDsl}
+     */
     EsDsl dslOps();
 
+    /**
+     * ltr操作
+     *
+     * @return {@link EsLtr}
+     */
     EsLtr ltrOps();
 }
