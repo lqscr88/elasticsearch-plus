@@ -50,76 +50,7 @@ public abstract class AbstractEsHandler implements EsOperate {
 
     protected RestHighLevelClient client;
 
-    /**
-     * 设置索引
-     *
-     * @param index 索引
-     * @param json  json
-     * @return {@link Object}
-     */
-    @Override
-    public Object createIndex(String index, String json) {
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index));
-        request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
-    }
 
-    /**
-     * 删除索引
-     *
-     * @param index 指数
-     * @return {@link Object}
-     */
-    @Override
-    public Object deleteIndex(String index) {
-        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
-    }
-
-    /**
-     * 得到索引
-     *
-     * @param index 索引
-     * @return {@link Object}
-     */
-    @Override
-    public Object getIndex(String index) {
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
-    }
-
-
-    /**
-     * 设置索引
-     *
-     * @param index 索引
-     * @param json  json
-     * @return {@link Object}
-     */
-    @Override
-    public Object updateMapping(String index, String json) {
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_mappings"));
-        request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
-    }
-
-
-    /**
-     * 设置Settings
-     *
-     * @param index 指数
-     * @param json  json
-     * @return {@link Object}
-     */
-    @Override
-    public Object updateSetting(String index, String json) {
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_settings"));
-        request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
-    }
 
     /**
      * 匹配

@@ -1,4 +1,4 @@
-package lq.simple.core;
+package lq.simple.core.index;
 
 /**
  * es操作
@@ -15,6 +15,14 @@ public interface EsIndexOperate {
      */
     Object createIndex(String index, String json);
 
+
+    /**
+     * 创建索引
+     *
+     * @param clazz clazz
+     * @return {@link Object}
+     */
+    Object createIndex(Class<?> clazz);
     /**
      * 删除索引
      *

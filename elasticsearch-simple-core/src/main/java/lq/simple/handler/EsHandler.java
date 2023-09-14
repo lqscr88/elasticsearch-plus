@@ -6,6 +6,8 @@ import lq.simple.client.EsClient;
 import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.core.dsl.EsDsl;
 import lq.simple.core.dsl.EsDslHandler;
+import lq.simple.core.index.EsIndexHandler;
+import lq.simple.core.index.EsIndexOperate;
 import lq.simple.core.ltr.EsLtr;
 import lq.simple.core.ltr.EsLtrHandler;
 import lq.simple.exception.IndexException;
@@ -29,35 +31,7 @@ public class EsHandler extends AbstractEsHandler{
     }
 
 
-    @Override
-    public Object createIndex(String index, String json) {
-        if (JsonCheckUtils.checkJson(json)) {
-            throw new IndexException(IndexException.INDEX_ERROR_MESSAGE);
-        }
-        return esCoverHandler.cover(super.createIndex(index, json).toString());
-    }
 
-
-    @Override
-    public Object deleteIndex(String index) {
-        return esCoverHandler.cover(super.deleteIndex(index).toString());
-    }
-
-    @Override
-    public Object updateMapping(String index, String json) {
-        if (JsonCheckUtils.checkJson(json)) {
-            throw new IndexException(IndexException.MAPPINGS_ERROR_MESSAGE);
-        }
-        return esCoverHandler.cover(super.updateMapping(index, json).toString());
-    }
-
-    @Override
-    public Object updateSetting(String index, String json) {
-        if (JsonCheckUtils.checkJson(json)) {
-            throw new IndexException(IndexException.SETTINGS_ERROR_MESSAGE);
-        }
-        return esCoverHandler.cover(super.updateSetting(index, json).toString());
-    }
 
     @Override
     public RestResp<SearchResult> search(String index, String json) {
@@ -75,11 +49,6 @@ public class EsHandler extends AbstractEsHandler{
         return esCoverHandler.cover(super.update(index, json).toString());
     }
 
-    @Override
-    public Object getIndex(String index) {
-        return esCoverHandler.cover(super.getIndex(index).toString());
-    }
-
 
     @Override
     public EsDsl dslOps() {
@@ -89,5 +58,10 @@ public class EsHandler extends AbstractEsHandler{
     @Override
     public EsLtr ltrOps() {
         return new EsLtrHandler(client);
+    }
+
+    @Override
+    public EsIndexOperate indexOps() {
+        return new EsIndexHandler(client);
     }
 }

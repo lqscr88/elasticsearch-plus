@@ -1,10 +1,8 @@
 package lq.simple.core;
 
-import lq.simple.bean.req.QueryReq;
-import lq.simple.bean.resp.RestResp;
 import lq.simple.core.dsl.EsDsl;
+import lq.simple.core.index.EsIndexOperate;
 import lq.simple.core.ltr.EsLtr;
-import lq.simple.result.SearchResult;
 
 /**
  * es操作
@@ -12,7 +10,7 @@ import lq.simple.result.SearchResult;
  * @author lqscr88
  * @date 2023/08/30
  */
-public interface EsOperate extends EsSearchOperate,EsIndexOperate,EsCrudOperate  {
+public interface EsOperate extends EsSearchOperate,EsCrudOperate  {
 
     /**
      * dsl操作
@@ -27,4 +25,6 @@ public interface EsOperate extends EsSearchOperate,EsIndexOperate,EsCrudOperate 
      * @return {@link EsLtr}
      */
     EsLtr ltrOps();
+
+    EsIndexOperate indexOps();
 }
