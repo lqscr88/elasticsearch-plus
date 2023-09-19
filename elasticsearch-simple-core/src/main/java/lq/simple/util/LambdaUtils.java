@@ -2,17 +2,16 @@ package lq.simple.util;
 
 import lq.simple.exception.LamdaException;
 import lq.simple.plus.lamda.support.ColumnCache;
-import org.apache.http.util.ExceptionUtils;
+import lq.simple.plus.lamda.support.SFunction;
+import lq.simple.plus.lamda.support.SerializedLambda;
 
 import java.io.*;
-import java.lang.invoke.SerializedLambda;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 public class LambdaUtils {
 
@@ -31,12 +30,12 @@ public class LambdaUtils {
      * @param <T>  类型，被调用的 Function 对象的目标类型
      * @return 返回解析后的结果
      */
-    public static <T> SerializedLambda resolveByField(Function<T, ?> func) {
+    public static <T> SerializedLambda resolveByField(SFunction<T, ?> func) {
         Class clazz = func.getClass();
         return Optional.ofNullable(FUNC_CACHE.get(clazz))
                 .map(WeakReference::get)
                 .orElseGet(() -> {
-                    SerializedLambda lambda = resolve(func);
+                    SerializedLambda lambda = SerializedLambda.resolve(func);
                     FUNC_CACHE.put(clazz, new WeakReference<>(lambda));
                     return lambda;
                 });
@@ -71,7 +70,7 @@ public class LambdaUtils {
      * @param lambda lambda对象
      * @return 返回解析后的 SerializedLambda
      */
-    public static SerializedLambda resolve(Function lambda) {
+    public static SerializedLambda resolve(SFunction lambda) {
         if (!lambda.getClass().isSynthetic()) {
             throw new LamdaException("该方法仅能传入 lambda 表达式产生的合成类");
         }

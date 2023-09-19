@@ -2,9 +2,10 @@ package lq.simple.plus.lamda.wrapper;
 
 import lq.simple.exception.LamdaException;
 import lq.simple.plus.lamda.support.ColumnCache;
+import lq.simple.plus.lamda.support.SFunction;
+import lq.simple.plus.lamda.support.SerializedLambda;
 import lq.simple.util.LambdaUtils;
 import lq.simple.util.StringUtils;
-import java.lang.invoke.SerializedLambda;
 import java.util.*;
 import java.util.function.Function;
 
@@ -14,18 +15,18 @@ public class AbstractLambdaWrapper<T, Children extends AbstractLambdaWrapper<T, 
     private boolean initColumnMap = false;
 
 
-    protected String columnToString(Function<T, ?> column) {
+    protected String columnToString(SFunction<T, ?> column) {
         return columnToString(column, true);
     }
 
-    protected String columnToString(Function<T, ?> column, boolean onlyColumn) {
+    protected String columnToString(SFunction<T, ?> column, boolean onlyColumn) {
         return getColumn(LambdaUtils.resolveByField(column), onlyColumn);
     }
 
     private String getColumn(SerializedLambda lambda, boolean onlyColumn) {
         String fieldName = StringUtils.resolveFieldName(lambda.getImplMethodName());
         if (!initColumnMap || !columnMap.containsKey(fieldName.toUpperCase(Locale.ENGLISH))) {
-            String entityClassName = lambda.getImplClass().replace('/', '.');
+            String entityClassName =  lambda.getImplClassName();
             columnMap = LambdaUtils.getColumnMap(entityClassName);
             if (Objects.isNull(columnMap)){
                 throw new LamdaException(LamdaException.AGG_ERROR_MESSAGE);
