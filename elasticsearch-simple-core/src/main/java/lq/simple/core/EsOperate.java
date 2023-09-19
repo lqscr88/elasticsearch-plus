@@ -26,5 +26,10 @@ public interface EsOperate extends EsSearchOperate,EsCrudOperate  {
      */
     EsLtr ltrOps();
 
+    /**
+     * 索引操作
+     *
+     * @return {@link EsIndexOperate}
+     */
     EsIndexOperate indexOps();
 }

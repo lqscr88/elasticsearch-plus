@@ -106,24 +106,6 @@ package lq.simple.util;
 //@Immutable
 public class StringUtils {
 
-    private static final int STRING_BUILDER_SIZE = 256;
-
-    // Performance testing notes (JDK 1.4, Jul03, scolebourne)
-    // Whitespace:
-    // Character.isWhitespace() is faster than WHITESPACE.indexOf()
-    // where WHITESPACE is a string of all whitespace characters
-    //
-    // Character access:
-    // String.charAt(n) versus toCharArray(), then array[n]
-    // String.charAt(n) is about 15% worse for a 10K string
-    // They are about equal for a length 50 string
-    // String.charAt(n) is about 4 times better for a length 3 string
-    // String.charAt(n) is best bet overall
-    //
-    // Append:
-    // String.concat about twice as fast as StringBuffer.append
-    // (not sure who tested this)
-
     /**
      * A String for a space character.
      *
@@ -136,35 +118,6 @@ public class StringUtils {
      * @since 2.0
      */
     public static final String EMPTY = "";
-
-    /**
-     * A String for linefeed LF ("\n").
-     *
-     * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.10.6">JLF: Escape Sequences
-     *      for Character and String Literals</a>
-     * @since 3.2
-     */
-    public static final String LF = "\n";
-
-    /**
-     * A String for carriage return CR ("\r").
-     *
-     * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.10.6">JLF: Escape Sequences
-     *      for Character and String Literals</a>
-     * @since 3.2
-     */
-    public static final String CR = "\r";
-
-    /**
-     * Represents a failed createIndex search.
-     * @since 2.1
-     */
-    public static final int INDEX_NOT_FOUND = -1;
-
-    /**
-     * <p>The maximum size to which the padding constant(s) can expand.</p>
-     */
-    private static final int PAD_LIMIT = 8192;
 
     /**
      * <p>{@code StringUtils} instances should NOT be constructed in
@@ -324,6 +277,58 @@ public class StringUtils {
             }
         }
         return true;
+    }
+
+    //------------------------------------------------lamda------------------------------------------
+
+
+    /**
+     * 字符串 is
+     */
+    public static final String IS = "is";
+
+
+    /**
+     * 解析 getMethodName -> propertyName
+     *
+     * @param getMethodName 需要解析的
+     * @return 返回解析后的字段名称
+     */
+    public static String resolveFieldName(String getMethodName) {
+        if (getMethodName.startsWith("get")) {
+            getMethodName = getMethodName.substring(3);
+        } else if (getMethodName.startsWith(IS)) {
+            getMethodName = getMethodName.substring(2);
+        }
+        // 小写第一个字母
+        return StringUtils.firstToLowerCase(getMethodName);
+    }
+
+    /**
+     * 首字母转换小写
+     *
+     * @param param 需要转换的字符串
+     * @return 转换好的字符串
+     */
+    public static String firstToLowerCase(String param) {
+        if (isEmpty(param)) {
+            return EMPTY;
+        }
+        return param.substring(0, 1).toLowerCase() + param.substring(1);
+    }
+
+    /**
+     * 安全的进行字符串 format
+     *
+     * @param target 目标字符串
+     * @param params format 参数
+     * @return format 后的
+     */
+    public static String format(String target, Object... params) {
+        if (target.contains("%s") && params.length > 0) {
+            return String.format(target, params);
+        }
+        return target;
     }
 
 }

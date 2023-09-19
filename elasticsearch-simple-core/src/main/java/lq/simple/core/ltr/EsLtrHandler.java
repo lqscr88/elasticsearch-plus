@@ -16,12 +16,12 @@ import java.util.List;
 public class EsLtrHandler extends AbstractEsLtrHandler{
 
     public EsLtrHandler(RestHighLevelClient client){
-        super.client = client;
-        esCoverHandler = new EsCoverHandler();
+        super.setClient(client);
+        super.setEsCoverHandler(esCoverHandler);
     }
 
     @Override
-    public Object createTemplate(String templateName, List<Object> param) {
+    public Object   createTemplate(String templateName, List<Object> param) {
         return esCoverHandler.cover(super.createTemplate(templateName, param).toString());
     }
 

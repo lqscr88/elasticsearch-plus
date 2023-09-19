@@ -7,7 +7,7 @@ import lq.simple.core.ltr.constant.LtrDslConstant;
 import lq.simple.enums.SearchHttpTypeEnum;
 import lq.simple.exception.LtrException;
 import lq.simple.util.CharacterUtil;
-import lq.simple.util.ResultUtil;
+import lq.simple.util.ResultUtils;
 import lq.simple.util.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -31,11 +31,19 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
     private static final String TEMPLATE_PRE_FIX = "/_ltr/_featureset/";
     private static final String TEMPLATE_ADD_PRE_FIX = "/_addfeatures";
     private static final String MODEL_LAST_FIX = "/_createmodel";
-
     private static final String MODEL_PRE_FIX = "_ltr/_model/";
-
     protected RestHighLevelClient client;
     protected EsCoverHandler esCoverHandler;
+
+
+    public void setEsCoverHandler(EsCoverHandler esCoverHandler) {
+        this.esCoverHandler = esCoverHandler;
+    }
+
+    public void setClient(RestHighLevelClient client) {
+        this.client = client;
+    }
+
 
     /**
      * init ltr
@@ -45,7 +53,7 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
     @Override
     public Object initLtr() {
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat("_ltr"));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
@@ -57,7 +65,7 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
         HttpEntity entity = new NStringEntity(featureset.toJSONString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.POST.name(), TEMPLATE_PRE_FIX.concat(templateName));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
@@ -69,19 +77,19 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
         HttpEntity entity = new NStringEntity(featureset.toJSONString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.POST.name(), TEMPLATE_PRE_FIX.concat(templateName).concat(TEMPLATE_ADD_PRE_FIX));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object getTemplate(String templateName) {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), TEMPLATE_PRE_FIX.concat(templateName));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object deleteTemplate(String templateName) {
         Request request = new Request(SearchHttpTypeEnum.DELETE.name(), TEMPLATE_PRE_FIX.concat(templateName));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
@@ -89,19 +97,19 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
         HttpEntity entity = new NStringEntity(modelParam.toString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.POST.name(), TEMPLATE_PRE_FIX.concat(modelName).concat(MODEL_LAST_FIX));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object deleteTemplateModel(String modelName) {
         Request request = new Request(SearchHttpTypeEnum.DELETE.name(), MODEL_PRE_FIX.concat(modelName));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object getTemplateModel(String modelName) {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), MODEL_PRE_FIX.concat(modelName));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override

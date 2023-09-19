@@ -1,6 +1,6 @@
 package lq.simple.core;
 
-import lq.simple.util.ListUtil;
+import lq.simple.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public interface EsCrudOperate {
      */
     default Object saveOrUpdateBatch(String index, List<String> json,Integer szie){
         List<Object> result = new ArrayList<>();
-        ListUtil.divideArrays(json,szie).forEach(data-> result.add(saveOrUpdateBatch(index,data)));
+        ListUtils.divideArrays(json,szie).forEach(data-> result.add(saveOrUpdateBatch(index,data)));
         return result;
     }
 
@@ -82,7 +82,7 @@ public interface EsCrudOperate {
      */
     default Object deleteBatch(String index, List<String> ids,Integer szie){
         List<Object> result = new ArrayList<>();
-        ListUtil.divideArrays(ids,szie).forEach(data-> result.add(deleteBatch(index,data)));
+        ListUtils.divideArrays(ids,szie).forEach(data-> result.add(deleteBatch(index,data)));
         return result;
     }
 

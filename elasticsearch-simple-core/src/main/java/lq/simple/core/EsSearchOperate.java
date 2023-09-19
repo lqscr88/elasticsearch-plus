@@ -2,6 +2,7 @@ package lq.simple.core;
 
 import lq.simple.bean.req.QueryReq;
 import lq.simple.bean.resp.RestResp;
+import lq.simple.plus.lamda.wrapper.Wrapper;
 import lq.simple.result.SearchResult;
 
 /**
@@ -18,6 +19,9 @@ public interface EsSearchOperate {
      *@return the {@link RestResp}
      */
     RestResp<SearchResult> match(QueryReq queryReq);
+
+
+    <T> RestResp<SearchResult> match(Wrapper<T> queryWrapper);
 
 
     /**

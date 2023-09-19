@@ -1,37 +1,22 @@
 package lq.simple.core.index;
 
 import com.alibaba.fastjson.JSONObject;
-import lq.simple.bean.req.AggReq;
-import lq.simple.bean.req.HighlightReq;
-import lq.simple.bean.req.QueryReq;
-import lq.simple.builder.AggregationBuilders;
-import lq.simple.builder.MatchQueryBuilder;
-import lq.simple.builder.QueryStringBuilder;
 import lq.simple.core.cover.EsCoverHandler;
-import lq.simple.core.dsl.EsDsl;
 import lq.simple.enums.SearchHttpTypeEnum;
-import lq.simple.exception.AggException;
 import lq.simple.exception.IndexException;
 import lq.simple.plus.annotation.IndexName;
 import lq.simple.plus.annotation.IndexSettings;
 import lq.simple.plus.annotation.ParticipleType;
 import lq.simple.plus.enums.ParticipleTypeEnum;
 import lq.simple.util.CharacterUtil;
-import lq.simple.util.ResultUtil;
-import lq.simple.util.StringUtils;
+import lq.simple.util.ResultUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -46,6 +31,15 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
 
     protected RestHighLevelClient client;
 
+
+    public void setEsCoverHandler(EsCoverHandler esCoverHandler) {
+        this.esCoverHandler = esCoverHandler;
+    }
+
+    public void setClient(RestHighLevelClient client) {
+        this.client = client;
+    }
+
     /**
      * 设置索引
      *
@@ -58,7 +52,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
@@ -147,7 +141,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
     @Override
     public Object deleteIndex(String index) {
         Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     /**
@@ -159,7 +153,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
     @Override
     public Object getIndex(String index) {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
 
@@ -175,7 +169,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_mappings"));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
 
@@ -191,6 +185,6 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_settings"));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 }

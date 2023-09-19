@@ -10,7 +10,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.IOException;
 
-public class ResultUtil {
+public class ResultUtils {
 
     /**
      * 得到结果

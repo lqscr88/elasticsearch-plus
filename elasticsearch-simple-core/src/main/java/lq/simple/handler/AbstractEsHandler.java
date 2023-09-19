@@ -10,9 +10,11 @@ import lq.simple.builder.QueryStringBuilder;
 import lq.simple.core.EsOperate;
 import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.enums.SearchHttpTypeEnum;
+import lq.simple.exception.SearchException;
+import lq.simple.plus.lamda.wrapper.Wrapper;
 import lq.simple.result.SearchResult;
 import lq.simple.util.CharacterUtil;
-import lq.simple.util.ResultUtil;
+import lq.simple.util.ResultUtils;
 import lq.simple.util.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -24,6 +26,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+import javax.crypto.Mac;
 import java.util.*;
 
 /**
@@ -45,11 +48,8 @@ public abstract class AbstractEsHandler implements EsOperate {
     public static final String _BULK = "_bulk";
     public static final String INDEX = "index";
 
-
     protected EsCoverHandler esCoverHandler;
-
     protected RestHighLevelClient client;
-
 
 
     /**
@@ -69,6 +69,28 @@ public abstract class AbstractEsHandler implements EsOperate {
         return getSearchResultRestResp(queryReq, builder, matchQueryBuilder);
     }
 
+    @Override
+    public <T> RestResp<SearchResult> match(Wrapper<T> queryWrapper) {
+        Map<String, Object> paramNameValuePairs = queryWrapper.getParamNameValuePairs();
+        SearchSourceBuilder builder = getSearchSourceBuilder();
+        if (paramNameValuePairs.size() != 1) {
+            throw new SearchException(SearchException.MATCH_ONE);
+        }
+        Map.Entry<String, Object> data = paramNameValuePairs.entrySet().stream().findFirst().get();
+        String field = data.getKey();
+        float boost = 1f;
+        if (data.getKey().contains(Wrapper.BOOST)) {
+            field = field.split(Wrapper.BOOST)[0];
+            boost = Float.parseFloat(field.split(Wrapper.BOOST)[1]);
+        }
+        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder(field, data.getValue());
+        matchQueryBuilder.boost(boost);
+        if (StringUtils.isNotEmpty(queryWrapper.getAnalyzer())) {
+            matchQueryBuilder.analyzer(queryWrapper.getAnalyzer());
+        }
+        return getSearchResultRestResp(queryWrapper.getFrom(),queryWrapper.getSize(),queryWrapper.getIndex(), builder, matchQueryBuilder);
+    }
+
     /**
      * 得到搜索来源工厂
      *
@@ -79,15 +101,19 @@ public abstract class AbstractEsHandler implements EsOperate {
     }
 
     private RestResp<SearchResult> getSearchResultRestResp(QueryReq queryReq, SearchSourceBuilder builder, QueryBuilder matchQueryBuilder) {
-        SearchSourceBuilder query = builder.from(queryReq.getFrom())
-                .size(queryReq.getSize())
+        return getSearchResultRestResp(queryReq.getFrom(), queryReq.getSize(), queryReq.getIndex(), builder, matchQueryBuilder);
+    }
+
+    private RestResp<SearchResult> getSearchResultRestResp(Integer from, Integer size, String index, SearchSourceBuilder builder, QueryBuilder matchQueryBuilder) {
+        SearchSourceBuilder query = builder.from(from)
+                .size(size)
                 .query(matchQueryBuilder);
         log.info("*********************************DSL: {}", query.toString());
         HttpEntity entity = new NStringEntity(query.toString(), ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(queryReq.getIndex()).concat(CharacterUtil.SLASH + "_search"));
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH + "_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 
 
@@ -143,36 +169,36 @@ public abstract class AbstractEsHandler implements EsOperate {
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 
     @Override
     public RestResp<SearchResult> all(String index, Integer page, Integer size) {
         String json = "{\"from\":0,\"size\":1000,\"query\":{\"match_all\":{}}}";
         if (page != null && size != null) {
-            json =  json.replace("0",page.toString()).replace("100",size.toString());
+            json = json.replace("0", page.toString()).replace("100", size.toString());
         }
         log.info("*********************************DSL: {}", json);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
         request.setEntity(entity);
-        return esCoverHandler.doCover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 
     @Override
     public Object save(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Request request;
-        if (json.contains(ID)){
-            JSONObject jsonObject =JSONObject.parseObject(json);
+        if (json.contains(ID)) {
+            JSONObject jsonObject = JSONObject.parseObject(json);
             String id = jsonObject.getString(ID);
             request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
-        }else {
+        } else {
             request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC));
         }
         request.setEntity(entity);
-        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 
 
@@ -181,22 +207,22 @@ public abstract class AbstractEsHandler implements EsOperate {
         StringBuilder dsl = new StringBuilder();
         JSONArray objects = JSONArray.parseArray(json.toString());
         Iterator<Object> iterator = objects.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             JSONObject next = (JSONObject) iterator.next();
-            JSONObject indexSetting =new JSONObject();
-            Map<String,Object> indexSettingParam = new HashMap<>();
-            indexSettingParam.put(_INDEX,index);
-            if (Objects.nonNull(next.getString(ID))){
-                indexSettingParam.put(_ID,next.getString(ID));
+            JSONObject indexSetting = new JSONObject();
+            Map<String, Object> indexSettingParam = new HashMap<>();
+            indexSettingParam.put(_INDEX, index);
+            if (Objects.nonNull(next.getString(ID))) {
+                indexSettingParam.put(_ID, next.getString(ID));
                 next.remove(ID);
             }
-            indexSetting.put(INDEX,indexSettingParam);
-            dsl.append(indexSetting.toJSONString()).append(System.getProperty(LINE_SEPARATOR) ).append(next.toJSONString()).append(System.getProperty(LINE_SEPARATOR));
+            indexSetting.put(INDEX, indexSettingParam);
+            dsl.append(indexSetting.toJSONString()).append(System.getProperty(LINE_SEPARATOR)).append(next.toJSONString()).append(System.getProperty(LINE_SEPARATOR));
         }
         HttpEntity entity = new NStringEntity(dsl.toString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(_BULK));
         request.setEntity(entity);
-        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 
     @Override
@@ -204,33 +230,33 @@ public abstract class AbstractEsHandler implements EsOperate {
         JSONObject jsonObject = JSONObject.parseObject(json);
         String id = jsonObject.getString(ID);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request  request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id).concat(CharacterUtil.SLASH).concat(UPDATE));
+        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id).concat(CharacterUtil.SLASH).concat(UPDATE));
         request.setEntity(entity);
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object detele(String index, String id) {
-        Request  request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
-        return ResultUtil.getResult(ResultUtil.getResponse(request, client));
+        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
+        return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object deleteBatch(String index, List<String> ids) {
         StringBuilder dsl = new StringBuilder();
-        ids.forEach(id->{
-            JSONObject indexSetting =new JSONObject();
-            Map<String,Object> indexSettingParam = new HashMap<>();
-            indexSettingParam.put(_INDEX,index);
-            indexSettingParam.put(_TYPE,DOC);
-            indexSettingParam.put(_ID,id);
-            indexSetting.put("delete",indexSettingParam);
-            dsl.append(indexSetting.toJSONString()).append(System.getProperty(LINE_SEPARATOR) );
+        ids.forEach(id -> {
+            JSONObject indexSetting = new JSONObject();
+            Map<String, Object> indexSettingParam = new HashMap<>();
+            indexSettingParam.put(_INDEX, index);
+            indexSettingParam.put(_TYPE, DOC);
+            indexSettingParam.put(_ID, id);
+            indexSetting.put("delete", indexSettingParam);
+            dsl.append(indexSetting.toJSONString()).append(System.getProperty(LINE_SEPARATOR));
 
         });
         HttpEntity entity = new NStringEntity(dsl.toString(), ContentType.APPLICATION_JSON);
         Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(_BULK));
         request.setEntity(entity);
-        return esCoverHandler.cover(ResultUtil.getResult(ResultUtil.getResponse(request, client)));
+        return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
 }

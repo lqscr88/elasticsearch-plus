@@ -18,8 +18,8 @@ public class EsIndexHandler extends AbstractEsIndexHandler {
 
 
     public EsIndexHandler(RestHighLevelClient client) {
-        super.client = client;
-        esCoverHandler = new EsCoverHandler();
+        super.setClient(client);
+        super.setEsCoverHandler(esCoverHandler);
     }
 
     @Override
