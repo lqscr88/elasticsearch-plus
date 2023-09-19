@@ -7,29 +7,29 @@ import lq.simple.plus.lamda.support.SerializedLambda;
 import lq.simple.util.LambdaUtils;
 import lq.simple.util.StringUtils;
 import java.util.*;
-import java.util.function.Function;
 
-public class AbstractLambdaWrapper<T, Children extends AbstractLambdaWrapper<T, Children>>extends AbstractWrapper<T, Function<T, ?>, Children> {
+public class AbstractLambdaWrapper<T, Children extends AbstractLambdaWrapper<T, Children>>extends AbstractWrapper<T, SFunction<T, ?>, Children> {
 
     private Map<String, ColumnCache> columnMap = null;
     private boolean initColumnMap = false;
 
-
+    @Override
     protected String columnToString(SFunction<T, ?> column) {
         return columnToString(column, true);
     }
 
     protected String columnToString(SFunction<T, ?> column, boolean onlyColumn) {
-        return getColumn(LambdaUtils.resolveByField(column), onlyColumn);
+        return getColumn(LambdaUtils.resolve(column), onlyColumn);
     }
 
     private String getColumn(SerializedLambda lambda, boolean onlyColumn) {
         String fieldName = StringUtils.resolveFieldName(lambda.getImplMethodName());
         if (!initColumnMap || !columnMap.containsKey(fieldName.toUpperCase(Locale.ENGLISH))) {
-            String entityClassName =  lambda.getImplClassName();
+            String entityClassName = lambda.getImplClassName();
             columnMap = LambdaUtils.getColumnMap(entityClassName);
             if (Objects.isNull(columnMap)){
-                throw new LamdaException(LamdaException.AGG_ERROR_MESSAGE);
+                throw new LamdaException(StringUtils.format("cannot find column's cache for \"%s\", so you cannot used \"%s\"!",
+                        entityClassName, typedThis.getClass()));
             }
             initColumnMap = true;
         }
