@@ -16,7 +16,7 @@ Maven
 pom.xml的dependencies中加入以下内容。
 最新版本：1.0.0
 ```
-    <!--  单点登录spring-boot-starter依赖  -->
+    <!--  spring-boot-starter依赖  -->
      <dependency>
          <groupId>lq.simple</groupId>
          <artifactId>elasticsearch-simple-spring-boot-starter</artifactId>
