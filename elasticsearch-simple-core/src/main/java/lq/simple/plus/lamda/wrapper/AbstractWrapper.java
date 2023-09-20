@@ -1,6 +1,5 @@
 package lq.simple.plus.lamda.wrapper;
 
-import lombok.Builder;
 import lombok.val;
 import lq.simple.exception.LamdaException;
 
@@ -8,7 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Children>> extends Wrapper<T> implements Compare<Children, R> {
+@SuppressWarnings({"serial", "unchecked"})
+public abstract class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Children>> extends Wrapper<T>
+        implements Compare<Children, R> {
 
 
     /**
@@ -24,6 +25,28 @@ public class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Childr
     private Integer size;
     private String analyzer;
     private String index;
+    /**
+     * 实体类型
+     */
+    protected Class<T> entityClass;
+    protected T entity;
+
+    @Override
+    public T getEntity() {
+        return entity;
+    }
+
+    public Children setEntity(T entity) {
+        this.entity = entity;
+        this.initEntityClass();
+        return typedThis;
+    }
+
+    protected void initEntityClass() {
+        if (this.entityClass == null && this.entity != null) {
+            this.entityClass = (Class<T>) entity.getClass();
+        }
+    }
 
     @Override
     public Children match(boolean condition, R column, Object val, Float boost) {
@@ -60,6 +83,10 @@ public class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Childr
         return index;
     }
 
+    protected void setIndex(String index) {
+        this.index = index;
+    }
+
     /**
      * 对sql片段进行组装
      *
@@ -67,6 +94,7 @@ public class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Childr
      * @return children
      */
     protected Children doIt(boolean condition, String column, Object val, Float boost) {
+        genericSuperclassIndexAnnotation();
         if (!condition) {
             return typedThis;
         }
@@ -89,6 +117,14 @@ public class AbstractWrapper<T, R, Children extends AbstractWrapper<T, R, Childr
         }
         throw new LamdaException("not support this column !");
     }
+
+    /**
+     * 获取 index
+     */
+    protected void genericSuperclassIndexAnnotation() {
+
+    }
+
 
     public Map<String, Object> getParamNameValuePairs() {
         return paramNameValuePairs;

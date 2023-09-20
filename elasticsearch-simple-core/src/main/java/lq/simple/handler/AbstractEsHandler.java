@@ -13,7 +13,7 @@ import lq.simple.enums.SearchHttpTypeEnum;
 import lq.simple.exception.SearchException;
 import lq.simple.plus.lamda.wrapper.Wrapper;
 import lq.simple.result.SearchResult;
-import lq.simple.util.CharacterUtil;
+import lq.simple.util.CharacterUtils;
 import lq.simple.util.ResultUtils;
 import lq.simple.util.StringUtils;
 import org.apache.http.HttpEntity;
@@ -26,7 +26,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import javax.crypto.Mac;
 import java.util.*;
 
 /**
@@ -108,10 +107,10 @@ public abstract class AbstractEsHandler implements EsOperate {
         SearchSourceBuilder query = builder.from(from)
                 .size(size)
                 .query(matchQueryBuilder);
-        log.info("*********************************DSL: {}", query.toString());
         HttpEntity entity = new NStringEntity(query.toString(), ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH + "_search"));
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH + "_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
+        log.info("*********************************DSL: {}", query.toString());
         request.setEntity(entity);
         return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
@@ -164,10 +163,10 @@ public abstract class AbstractEsHandler implements EsOperate {
      */
     @Override
     public RestResp<SearchResult> search(String index, String json) {
-        log.info("*********************************DSL: {}", json);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
+        log.info("*********************************DSL: {}", json);
         request.setEntity(entity);
         return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
@@ -178,10 +177,10 @@ public abstract class AbstractEsHandler implements EsOperate {
         if (page != null && size != null) {
             json = json.replace("0", page.toString()).replace("100", size.toString());
         }
-        log.info("*********************************DSL: {}", json);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_search"));
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat("_search"));
         log.info("*********************************URl: {} {}", request.getMethod(), request.getEndpoint());
+        log.info("*********************************DSL: {}", json);
         request.setEntity(entity);
         return esCoverHandler.doCover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
@@ -193,9 +192,9 @@ public abstract class AbstractEsHandler implements EsOperate {
         if (json.contains(ID)) {
             JSONObject jsonObject = JSONObject.parseObject(json);
             String id = jsonObject.getString(ID);
-            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
+            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat(DOC).concat(CharacterUtils.SLASH).concat(id));
         } else {
-            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC));
+            request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat(DOC));
         }
         request.setEntity(entity);
         return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
@@ -220,7 +219,7 @@ public abstract class AbstractEsHandler implements EsOperate {
             dsl.append(indexSetting.toJSONString()).append(System.getProperty(LINE_SEPARATOR)).append(next.toJSONString()).append(System.getProperty(LINE_SEPARATOR));
         }
         HttpEntity entity = new NStringEntity(dsl.toString(), ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(_BULK));
+        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtils.SLASH.concat(_BULK));
         request.setEntity(entity);
         return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }
@@ -230,14 +229,14 @@ public abstract class AbstractEsHandler implements EsOperate {
         JSONObject jsonObject = JSONObject.parseObject(json);
         String id = jsonObject.getString(ID);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id).concat(CharacterUtil.SLASH).concat(UPDATE));
+        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat(DOC).concat(CharacterUtils.SLASH).concat(id).concat(CharacterUtils.SLASH).concat(UPDATE));
         request.setEntity(entity);
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
     @Override
     public Object detele(String index, String id) {
-        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat(DOC).concat(CharacterUtil.SLASH).concat(id));
+        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat(DOC).concat(CharacterUtils.SLASH).concat(id));
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
@@ -255,7 +254,7 @@ public abstract class AbstractEsHandler implements EsOperate {
 
         });
         HttpEntity entity = new NStringEntity(dsl.toString(), ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtil.SLASH.concat(_BULK));
+        Request request = new Request(SearchHttpTypeEnum.POST.name(), CharacterUtils.SLASH.concat(_BULK));
         request.setEntity(entity);
         return esCoverHandler.cover(ResultUtils.getResult(ResultUtils.getResponse(request, client)));
     }

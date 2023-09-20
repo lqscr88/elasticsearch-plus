@@ -8,7 +8,7 @@ import lq.simple.plus.annotation.IndexName;
 import lq.simple.plus.annotation.IndexSettings;
 import lq.simple.plus.annotation.ParticipleType;
 import lq.simple.plus.enums.ParticipleTypeEnum;
-import lq.simple.util.CharacterUtil;
+import lq.simple.util.CharacterUtils;
 import lq.simple.util.ResultUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -50,7 +50,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
     @Override
     public Object createIndex(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index));
+        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtils.SLASH.concat(index));
         request.setEntity(entity);
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
@@ -140,7 +140,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
      */
     @Override
     public Object deleteIndex(String index) {
-        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtil.SLASH.concat(index));
+        Request request = new Request(SearchHttpTypeEnum.DELETE.name(), CharacterUtils.SLASH.concat(index));
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
      */
     @Override
     public Object getIndex(String index) {
-        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtil.SLASH.concat(index));
+        Request request = new Request(SearchHttpTypeEnum.GET.name(), CharacterUtils.SLASH.concat(index));
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
@@ -167,7 +167,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
     @Override
     public Object updateMapping(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_mappings"));
+        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat("_mappings"));
         request.setEntity(entity);
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
@@ -183,7 +183,7 @@ public abstract class AbstractEsIndexHandler implements EsIndexOperate {
     @Override
     public Object updateSetting(String index, String json) {
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat(index).concat(CharacterUtil.SLASH).concat("_settings"));
+        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtils.SLASH.concat(index).concat(CharacterUtils.SLASH).concat("_settings"));
         request.setEntity(entity);
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }

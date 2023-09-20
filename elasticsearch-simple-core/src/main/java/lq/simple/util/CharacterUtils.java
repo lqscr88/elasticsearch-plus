@@ -1,6 +1,6 @@
 package lq.simple.util;
 
-public class CharacterUtil {
+public class CharacterUtils {
 
 
     public final static String SLASH = "/";

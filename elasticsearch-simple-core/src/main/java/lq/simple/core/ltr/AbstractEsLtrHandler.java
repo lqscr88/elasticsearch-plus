@@ -6,7 +6,7 @@ import lq.simple.core.cover.EsCoverHandler;
 import lq.simple.core.ltr.constant.LtrDslConstant;
 import lq.simple.enums.SearchHttpTypeEnum;
 import lq.simple.exception.LtrException;
-import lq.simple.util.CharacterUtil;
+import lq.simple.util.CharacterUtils;
 import lq.simple.util.ResultUtils;
 import lq.simple.util.StringUtils;
 import org.apache.http.HttpEntity;
@@ -52,7 +52,7 @@ public abstract class AbstractEsLtrHandler implements EsLtr {
      */
     @Override
     public Object initLtr() {
-        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtil.SLASH.concat("_ltr"));
+        Request request = new Request(SearchHttpTypeEnum.PUT.name(), CharacterUtils.SLASH.concat("_ltr"));
         return ResultUtils.getResult(ResultUtils.getResponse(request, client));
     }
 
